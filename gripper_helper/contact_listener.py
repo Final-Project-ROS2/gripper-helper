@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+from std_srvs.srv import Empty
 from linkattacher_msgs.srv import AttachLink, DetachLink
 import time
 
@@ -25,6 +26,7 @@ class ContactListener(Node):
         # Service clients
         self.attach_client = self.create_client(AttachLink, '/ATTACHLINK')
         self.detach_client = self.create_client(DetachLink, '/DETACHLINK')
+        self.clear_octomap_client = self.create_client(Empty, '/clear_octomap')
 
         # Internal state
         self.gripped = False
@@ -130,6 +132,8 @@ class ContactListener(Node):
             if hasattr(response, 'success') and response.success:
                 self.gripped = True
                 self.get_logger().info('Successfully attached links! Gripped set to True.')
+
+                self.clear_octomap()
             else:
                 self.get_logger().warn('AttachLink service call failed or returned False.')
         except Exception as e:
@@ -159,6 +163,24 @@ class ContactListener(Node):
                 self.get_logger().warn('DetachLink service call failed or returned False.')
         except Exception as e:
             self.get_logger().error(f'DetachLink service call failed: {e}')
+    
+    def clear_octomap(self):
+        """Call /clear_octomap service (std_srvs/Empty)."""
+        if not self.clear_octomap_client.wait_for_service(timeout_sec=2.0):
+            self.get_logger().warn('/clear_octomap service not available.')
+            return
+
+        req = Empty.Request()
+        future = self.clear_octomap_client.call_async(req)
+        future.add_done_callback(self.clear_octomap_response_callback)
+        self.get_logger().info('Called /clear_octomap service after attachment.')
+
+    def clear_octomap_response_callback(self, future):
+        try:
+            future.result()  # std_srvs/Empty has no fields
+            self.get_logger().info('/clear_octomap service call succeeded.')
+        except Exception as e:
+            self.get_logger().error(f'/clear_octomap service call failed: {e}')
 
 
 def main(args=None):
