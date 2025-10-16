@@ -22,6 +22,7 @@ setup(
         'console_scripts': [
             'contact_listener = gripper_helper.contact_listener:main',
             'wrapper_gripper_node = gripper_helper.wrapper_gripper_action:main',
+            'gripper_service_server = gripper_helper.gripper_service_server:main',
         ],
     },
 )
