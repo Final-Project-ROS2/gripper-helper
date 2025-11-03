@@ -23,6 +23,7 @@ setup(
             'contact_listener = gripper_helper.contact_listener:main',
             'wrapper_gripper_node = gripper_helper.wrapper_gripper_action:main',
             'gripper_service_server = gripper_helper.gripper_service_server:main',
+            'contact_listener_wrapper = gripper_helper.contact_listener_wrapper:main',
         ],
     },
 )

@@ -59,6 +59,12 @@ class ContactListener(Node):
         elif link2_name == 'robotiq_85_left_finger_tip_link':
             self.get_logger().info("Replacing link2 with wrist_3_link.")
             link2_name = 'wrist_3_link'
+        elif link1_name == 'robotiq_85_right_finger_tip_link':
+            self.get_logger().info("Replacing link1 with wrist_3_link.")
+            link1_name = 'wrist_3_link'
+        elif link2_name == 'robotiq_85_right_finger_tip_link':
+            self.get_logger().info("Replacing link2 with wrist_3_link.")
+            link2_name = 'wrist_3_link'
 
         self.get_logger().info(f"Parsed contact — model1: {model1_name}, link1: {link1_name}, model2: {model2_name}, link2: {link2_name}")
 
